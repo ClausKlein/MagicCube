@@ -17,7 +17,8 @@ cube appear to be solid.
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.axes import Axes
-from matplotlib.collections import PolyCollection
+
+# XXX from matplotlib.collections import PolyCollection
 
 
 class Quaternion:
@@ -183,7 +184,7 @@ class CubeAxes(Axes):
                 yticks=[],
             )
         )
-        super(CubeAxes, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         # connect some GUI events
         self.figure.canvas.mpl_connect("button_press_event", self._mouse_press)
@@ -282,7 +283,8 @@ class CubeAxes(Axes):
         """Handler for key press events"""
         if event.key == "shift":
             self._ax_LR = (0, 0, 1)
-            self._shift_on = True
+            # W0201: Attribute '_shift_on' defined outside __init__
+            # TODO(CK): self._shift_on = True
 
         elif event.key == "right":
             self.current_rot = self.current_rot * Quaternion.from_v_theta(

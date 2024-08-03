@@ -182,6 +182,7 @@ class Cube:
         try:
             f_last, n_last, layer_last = self._move_list[-1]
         except:
+            # TODO(CK): W0702: No exception type(s) specified (bare-except)
             f_last, n_last, layer_last = None, None, None
 
         if (f == f_last) and (layer == layer_last):
@@ -219,7 +220,6 @@ class InteractiveCube(plt.Axes):
     def __init__(
         self,
         cube=None,
-        interactive=True,
         view=(0, 0, 10),
         fig=None,
         rect=[0, 0.16, 1, 0.84],
@@ -253,7 +253,7 @@ class InteractiveCube(plt.Axes):
                 yticks=kwargs.get("yticks", []),
             )
         )
-        super(InteractiveCube, self).__init__(fig, rect, **kwargs)
+        super().__init__(fig, rect, **kwargs)
         self.xaxis.set_major_formatter(plt.NullFormatter())
         self.yaxis.set_major_formatter(plt.NullFormatter())
 
@@ -405,6 +405,7 @@ class InteractiveCube(plt.Axes):
             else:
                 direction = 1
 
+            # FIXME: E1101: Instance of 'InteractiveCube' has no 'N' member (no-member)
             if np.any(self._digit_flags[:N]):
                 for d in np.arange(N)[self._digit_flags[:N]]:
                     self.rotate_face(event.key.upper(), direction, layer=d)
@@ -470,6 +471,7 @@ if __name__ == "__main__":
     try:
         N = int(sys.argv[1])
     except:
+        # TODO(CK): W0702: No exception type(s) specified (bare-except)
         N = 3
 
     c = Cube(N)

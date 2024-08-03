@@ -111,7 +111,6 @@ class Cube():
         else:
             self.plasticcolor = "#1f1f1f"
         self.fontsize = 12.0 * (self.N / 5.0)
-        return None
 
     def turn(self, f, d):
         """
@@ -121,7 +120,6 @@ class Cube():
         """
         for l in range(self.N):
             self.move(f, l, d)
-        return None
 
     def move(self, f, l, d):
         """
@@ -181,7 +179,9 @@ class Cube():
             if l == 0:
                 self.stickers[i] = np.rot90(self.stickers[i], 3)
             if l == self.N - 1:
+                assert i2 < 6
                 self.stickers[i2] = np.rot90(self.stickers[i2], 1)
+                # TODO(CK): E0606: Possibly using variable 'i2' before assignment
         print("moved", f, l, len(ds))
         return None
 
@@ -190,13 +190,12 @@ class Cube():
         Internal function for the `move()` function.
         """
         a0 = args[0]
-        foo = self.stickers[a0]
+        stick = self.stickers[a0]
         a = a0
         for b in args[1:]:
             self.stickers[a] = self.stickers[b]
             a = b
-        self.stickers[a] = foo
-        return None
+        self.stickers[a] = stick
 
     def randomize(self, number):
         """
@@ -207,7 +206,6 @@ class Cube():
             l = np.random.randint(self.N)
             d = 1 + np.random.randint(3)
             self.move(f, l, d)
-        return None
 
     def _render_points(self, points, viewpoint):
         """
@@ -295,7 +293,6 @@ class Cube():
                     rotation=20,
                     fontsize=self.fontsize / (-zorder),
                 )
-        return None
 
     def _stickerpolygon(self, xdir, ydir, zdir, csz, j, k):
         small = 0.5 * (1.0 - self.stickerwidth)
@@ -373,7 +370,6 @@ class Cube():
                 rotation=20,
                 fontsize=self.fontsize,
             )
-        return None
 
     def render(self, flat=True, views=True):
         """
@@ -425,7 +421,6 @@ def adjacent_edge_flip(cube):
         cube.move("U", l, -1)
     cube.move("R", 0, 1)
     cube.move("U", 0, 1)
-    return None
 
 
 def swap_off_diagonal(cube, f, l1, l2):
@@ -442,7 +437,6 @@ def swap_off_diagonal(cube, f, l1, l2):
     cube.move(f, l2, 1)
     cube.move("U", 0, 1)
     cube.move(f, l2, -1)
-    return None
 
 
 def checkerboard(cube):
@@ -456,7 +450,6 @@ def checkerboard(cube):
     if cube.N % 2 == 0:
         for l in ls:
             cube.move("F", l, 2)
-    return None
 
 
 if __name__ == "__main__":
@@ -472,5 +465,8 @@ if __name__ == "__main__":
     #    swap_off_diagonal(c, "R", 3, 2)
     #    checkerboard(c)
     for m in range(32):
-        c.render(flat=False).savefig("test%02d.png" % m, dpi=865 / c.N)
+        # RuntimeWarning: Consider using `matplotlib.pyplot.close()
+        f = c.render(flat=False)
+        f.savefig(f"test{m:02d}.png", dpi=865 / c.N)
+        plt.close(f)
         c.randomize(1)
