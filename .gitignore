@@ -1,6 +1,10 @@
+.*.swp
+.*~
 *~
 *.aux
+*.bak
 *.log
 *.pdf
 *.pyc
 *.png
+__pycache__/

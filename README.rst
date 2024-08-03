@@ -18,7 +18,7 @@ Usage
 
 Interactive Cube
 ~~~~~~~~~~~~~~~~
-To use the matplotlib-based interactive cube, run 
+To use the matplotlib-based interactive cube, run
 
      python code/cube_interactive.py
 

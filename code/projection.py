@@ -1,10 +1,12 @@
 import numpy as np
 
+
 class Quaternion:
     """Quaternion Rotation:
 
     Class to aid in representing 3D rotations via quaternions.
     """
+
     @classmethod
     def from_v_theta(cls, v, theta):
         """
@@ -53,16 +55,16 @@ class Quaternion:
         return_shape = prod.shape[:-1]
         prod = prod.reshape((-1, 4, 4)).transpose((1, 2, 0))
 
-        ret = np.array([(prod[0, 0] - prod[1, 1]
-                         - prod[2, 2] - prod[3, 3]),
-                        (prod[0, 1] + prod[1, 0]
-                         + prod[2, 3] - prod[3, 2]),
-                        (prod[0, 2] - prod[1, 3]
-                         + prod[2, 0] + prod[3, 1]),
-                        (prod[0, 3] + prod[1, 2]
-                         - prod[2, 1] + prod[3, 0])],
-                       dtype=np.float,
-                       order='F').T
+        ret = np.array(
+            [
+                (prod[0, 0] - prod[1, 1] - prod[2, 2] - prod[3, 3]),
+                (prod[0, 1] + prod[1, 0] + prod[2, 3] - prod[3, 2]),
+                (prod[0, 2] - prod[1, 3] + prod[2, 0] + prod[3, 1]),
+                (prod[0, 3] + prod[1, 2] - prod[2, 1] + prod[3, 0]),
+            ],
+            dtype=float,
+            order="F",
+        ).T
         return self.__class__(ret.reshape(return_shape))
 
     def as_v_theta(self):
@@ -70,12 +72,12 @@ class Quaternion:
         x = self.x.reshape((-1, 4)).T
 
         # compute theta
-        norm = np.sqrt((x ** 2).sum(0))
+        norm = np.sqrt((x**2).sum(0))
         theta = 2 * np.arccos(x[0] / norm)
 
         # compute the unit vector
-        v = np.array(x[1:], order='F', copy=True)
-        v /= np.sqrt(np.sum(v ** 2, 0))
+        v = np.array(x[1:], order="F", copy=True)
+        v /= np.sqrt(np.sum(v**2, 0))
 
         # reshape the results
         v = v.T.reshape(self.x.shape[:-1] + (3,))
@@ -93,16 +95,26 @@ class Quaternion:
         c = np.cos(theta)
         s = np.sin(theta)
 
-        mat = np.array([[v[0] * v[0] * (1. - c) + c,
-                         v[0] * v[1] * (1. - c) - v[2] * s,
-                         v[0] * v[2] * (1. - c) + v[1] * s],
-                        [v[1] * v[0] * (1. - c) + v[2] * s,
-                         v[1] * v[1] * (1. - c) + c,
-                         v[1] * v[2] * (1. - c) - v[0] * s],
-                        [v[2] * v[0] * (1. - c) - v[1] * s,
-                         v[2] * v[1] * (1. - c) + v[0] * s,
-                         v[2] * v[2] * (1. - c) + c]],
-                       order='F').T
+        mat = np.array(
+            [
+                [
+                    v[0] * v[0] * (1.0 - c) + c,
+                    v[0] * v[1] * (1.0 - c) - v[2] * s,
+                    v[0] * v[2] * (1.0 - c) + v[1] * s,
+                ],
+                [
+                    v[1] * v[0] * (1.0 - c) + v[2] * s,
+                    v[1] * v[1] * (1.0 - c) + c,
+                    v[1] * v[2] * (1.0 - c) - v[0] * s,
+                ],
+                [
+                    v[2] * v[0] * (1.0 - c) - v[1] * s,
+                    v[2] * v[1] * (1.0 - c) + v[0] * s,
+                    v[2] * v[2] * (1.0 - c) + c,
+                ],
+            ],
+            order="F",
+        ).T
         return mat.reshape(shape + (3, 3))
 
     def rotate(self, points):
@@ -157,7 +169,7 @@ def project_points(points, q, view, vertical=[0, 1, 0]):
     dpoint_view = np.dot(dpoint, view).reshape(dpoint.shape[:-1] + (1,))
     dproj = -dpoint * v2 / dpoint_view
 
-    trans =  list(range(1, dproj.ndim)) + [0]
-    return np.array([np.dot(dproj, xdir),
-                     np.dot(dproj, ydir),
-                     -np.dot(dpoint, zdir)]).transpose(trans)
+    trans = list(range(1, dproj.ndim)) + [0]
+    return np.array(
+        [np.dot(dproj, xdir), np.dot(dproj, ydir), -np.dot(dpoint, zdir)]
+    ).transpose(trans)
