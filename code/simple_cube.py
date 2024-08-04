@@ -147,13 +147,18 @@ class CubeAxes(Axes):
     """
 
     face = np.array([[1, 1], [1, -1], [-1, -1], [-1, 1], [1, 1]])
-    faces = np.array(
-        [np.hstack([face[:, :i], np.ones((5, 1)), face[:, i:]]) for i in range(3)]
-        + [np.hstack([face[:, :i], -np.ones((5, 1)), face[:, i:]]) for i in range(3)]
-    )
+    # faces = np.array(
+    #     [np.hstack([face[:, :i], np.ones((5, 1)), face[:, i:]]) for i in range(3)]
+    #     + [np.hstack([face[:, :i], -np.ones((5, 1)), face[:, i:]]) for i in range(3)]
+    # )
     stickercolors = ["#ffffff", "#00008f", "#ff6f00", "#ffcf00", "#009f0f", "#cf0000"]
 
     def __init__(self, *args, **kwargs):
+        self.faces = np.array(
+            [np.hstack([self.face[:, :i], np.ones((5, 1)), self.face[:, i:]]) for i in range(3)]
+            + [np.hstack([self.face[:, :i], -np.ones((5, 1)), self.face[:, i:]]) for i in range(3)]
+        )
+
         self.start_rot = Quaternion.from_v_theta((1, -1, 0), -np.pi / 6)
         self.current_rot = self.start_rot
 
